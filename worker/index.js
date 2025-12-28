@@ -15,7 +15,7 @@ export default {
       const response = await fetch(apiURL);
       const data = await response.json();
 
-      // Format data untuk dikirim ke Frontend
+      // Format data untuk dikirim ke Frontend 
       const cryptoData = [
         { id: 1, name: "Bitcoin", symbol: "BTC", price: data.bitcoin.usd, change: data.bitcoin.usd_24h_change },
         { id: 2, name: "Ethereum", symbol: "ETH", price: data.ethereum.usd, change: data.ethereum.usd_24h_change },
