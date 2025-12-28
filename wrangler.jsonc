@@ -1,5 +1,5 @@
 {
-  "name": "node-api",
+  "name": "react-app",
   "main": "worker/index.js",
   "compatibility_date": "2025-12-28"
 }
