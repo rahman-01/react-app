@@ -5,12 +5,12 @@ import { Routes, Route } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-// 2. Static Layout Components (Impor langsung karena selalu muncul)
+// 2. Static Components (Cepat di-load)
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Dashboard from './page/Dashboard'; // Pastikan nama folder 'page' sesuai
 
-// 3. Page-level Components
-// Menggunakan Lazy Loading untuk performa load awal yang lebih cepat
+// 3. Lazy Loaded Components (Optimasi Performa)
 const Hero = lazy(() => import('./components/Hero'));
 const Features = lazy(() => import('./components/Features'));
 const Pricing = lazy(() => import('./components/Pricing'));
@@ -19,7 +19,16 @@ const FAQ = lazy(() => import('./components/FAQ'));
 const CTA = lazy(() => import('./components/CTA'));
 const AuthForm = lazy(() => import('./components/AuthForm'));
 
-// Komponen LandingPage yang rapi
+// Komponen Pembungkus: Memberikan Navbar & Footer ke halaman publik
+const PublicLayout = ({ children }) => (
+  <>
+    <Navbar />
+    {children}
+    <Footer />
+  </>
+);
+
+// Gabungan Section Landing Page
 const LandingPage = () => (
   <>
     <Hero />
@@ -31,9 +40,9 @@ const LandingPage = () => (
   </>
 );
 
-// Komponen Loading sederhana saat transisi lazy load
+// Loading State saat transisi Lazy Load
 const Loading = () => (
-  <div className="min-h-screen bg-slate-950 flex items-center justify-center text-indigo-400">
+  <div className="min-h-screen bg-slate-950 flex items-center justify-center">
     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
   </div>
 );
@@ -44,34 +53,40 @@ function App() {
       duration: 1000,
       once: true,
       easing: 'ease-in-out',
-      offset: 100, // Menghindari animasi trigger terlalu dini
+      offset: 100,
     });
   }, []);
 
   return (
     <div className="overflow-x-hidden font-sans bg-slate-950 text-slate-200 antialiased">
-      <Navbar />
-      
-      <main>
-        {/* Suspense menangani "jeda" saat komponen lazy dimuat */}
-        <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<AuthForm mode="login" />} />
-            <Route path="/register" element={<AuthForm mode="register" />} />
-            <Route 
-              path="/crypto" 
-              element={
-                <div className="pt-32 min-h-screen flex items-center justify-center bg-slate-900">
-                  <h2 className="text-3xl font-bold text-white">Dashboard Market Crypto</h2>
-                </div>
-              } 
-            />
-          </Routes>
-        </Suspense>
-      </main>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          {/* RUTE LANDING PAGE (Pakai Navbar & Footer) */}
+          <Route path="/" element={
+            <PublicLayout>
+              <LandingPage />
+            </PublicLayout>
+          } />
 
-      <Footer />
+          {/* RUTE AUTH (Pakai Navbar & Footer) */}
+          <Route path="/login" element={
+            <PublicLayout>
+              <AuthForm mode="login" />
+            </PublicLayout>
+          } />
+          
+          <Route path="/register" element={
+            <PublicLayout>
+              <AuthForm mode="register" />
+            </PublicLayout>
+          } />
+
+          {/* RUTE DASHBOARD (Bersih tanpa Navbar Landing Page) */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/crypto" element={<Dashboard />} />
+          
+        </Routes>
+      </Suspense>
     </div>
   );
 }

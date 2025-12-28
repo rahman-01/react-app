@@ -38,7 +38,7 @@ const AuthForm = ({ mode = "login" }) => {
     // Simulasi Testing Lokal
     if (formData.email === "admin@test.com" && formData.password === "123456") {
       alert("Akses Berhasil! Mengalihkan ke Dashboard...");
-      navigate('/crypto');
+      navigate('/dashboard');
     } else {
       alert("Email atau Password salah! (Gunakan: admin@test.com / 123456)");
     }
